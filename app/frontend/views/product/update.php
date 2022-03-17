@@ -3,15 +3,15 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var common\models\WarehouseForm $form Форма склада */
-/** @var common\models\Warehouse $model Модель склада */
+/** @var common\models\ProductForm $form Форма продукта */
+/** @var common\models\Product $model Модель продукта */
 
-$this->title = 'Обновить склад: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Склады', 'url' => ['index']];
+$this->title = 'Обновить продукт: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Продукт', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Обновить';
 ?>
-<div class="warehouse-update">
+<div class="product-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

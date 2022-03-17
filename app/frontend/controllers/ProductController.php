@@ -2,10 +2,10 @@
 
 namespace frontend\controllers;
 
-use common\models\Warehouse;
-use common\models\search\WarehouseSearch;
-use common\models\WarehouseForm;
-use common\services\WarehouseService;
+use common\models\Product;
+use common\models\ProductForm;
+use common\models\search\ProductSearch;
+use common\services\ProductService;
 use Yii;
 use yii\base\Module;
 use yii\db\StaleObjectException;
@@ -15,48 +15,48 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
- * Контролер склада.
+ * Контроллер продукта.
  */
-class WarehouseController extends Controller
+class ProductController extends Controller
 {
     /**
-     * @var Warehouse Модель склада
+     * @var Product Модель продукта
      */
-    private $warehouse;
+    private $product;
 
     /**
-     * @var WarehouseSearch Модель данных склада и поиска по ним
+     * @var ProductSearch Модель данных продукта и поиска по ним
      */
-    private $warehouseSearch;
+    private $productSearch;
 
     /**
-     * @var WarehouseService Сервис склада
+     * @var ProductService Сервис продукта
      */
-    private $warehouseService;
+    private $productService;
 
     /**
      * Конструктор.
      *
      * @param string $id Идентификатор контроллера
      * @param Module $module Модуль приложения
-     * @param Warehouse $warehouse Модель склада
-     * @param WarehouseSearch $warehouseSearch Модель данных накладных склада и поиска по ним
-     * @param WarehouseService $warehouseService Сервис склада
+     * @param Product $product Модель продукта
+     * @param ProductSearch $productSearch Модель данных продукта и поиска по ним
+     * @param ProductService $productService Сервис продукта
      * @param $config
      */
     public function __construct(
         $id,
         $module,
-        Warehouse $warehouse,
-        WarehouseSearch $warehouseSearch,
-        WarehouseService $warehouseService,
+        Product $product,
+        ProductSearch $productSearch,
+        ProductService $productService,
         $config = []
     )
     {
         parent::__construct($id, $module, $config);
-        $this->warehouse = $warehouse;
-        $this->warehouseSearch = $warehouseSearch;
-        $this->warehouseService = $warehouseService;
+        $this->product = $product;
+        $this->productSearch = $productSearch;
+        $this->productService = $productService;
     }
 
     /**
@@ -78,24 +78,24 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Список всех складов.
+     * Список всех продуктов.
      *
      * @return string
      */
     public function actionIndex(): string
     {
         return $this->render('index', [
-            'searchModel' => $this->warehouseSearch,
-            'dataProvider' => $this->warehouseSearch->search($this->request->queryParams),
+            'searchModel' => $this->productSearch,
+            'dataProvider' => $this->productSearch->search($this->request->queryParams),
         ]);
     }
 
     /**
-     * Склад.
+     * Продукт.
      *
-     * @param int $id Идентификатор склада
+     * @param int $id Идентификатор продукта
      * @return string
-     * @throws NotFoundHttpException Если склад не был найден
+     * @throws NotFoundHttpException Если продукт не найден
      */
     public function actionView(int $id): string
     {
@@ -105,19 +105,19 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Создание склада.
+     * Создание продукта.
      *
      * @return string|Response
      */
     public function actionCreate()
     {
-        $form = new WarehouseForm();
+        $form = new ProductForm();
         if ($this->request->isPost) {
             if ($form->load($this->request->post()) && $form->validate()) {
                 try {
-                    $warehouse = $this->warehouseService->create($form);
-                    Yii::$app->session->setFlash('success', 'Склад был успешно добавлен');
-                    return $this->redirect(['view', 'id' => $warehouse->id]);
+                    $product = $this->productService->create($form);
+                    Yii::$app->session->setFlash('success', 'Продукт был успешно добавлен');
+                    return $this->redirect(['view', 'id' => $product->id]);
                 } catch (\DomainException $e) {
                     Yii::$app->errorHandler->logException($e);
                     Yii::$app->session->setFlash('error', $e->getMessage());
@@ -131,21 +131,21 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Обновление склада.
+     * Обновление продукта.
      *
-     * @param int $id Идентификатор склада
+     * @param int $id Идентификатор продукта
      * @return string|Response
-     * @throws NotFoundHttpException Если склад не был найден
+     * @throws NotFoundHttpException Если продукт не найден
      */
     public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
-        $form = new WarehouseForm($model);
+        $form = new ProductForm($model);
         if ($this->request->isPost && $form->load($this->request->post()) && $form->validate()) {
             try {
-                $warehouse = $this->warehouseService->edit($model->id, $form);
-                Yii::$app->session->setFlash('success', 'Склад был успешно обновлён');
-                return $this->redirect(['view', 'id' => $warehouse->id]);
+                $product = $this->productService->edit($model->id, $form);
+                Yii::$app->session->setFlash('success', 'Продукт был успешно обновлён');
+                return $this->redirect(['view', 'id' => $product->id]);
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
                 Yii::$app->session->setFlash('error', $e->getMessage());
@@ -159,11 +159,11 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Удаление склада.
+     * Удаление продукта.
      *
-     * @param int $id Идентификатор склада
+     * @param int $id Идентификатор продукта
      * @return Response
-     * @throws NotFoundHttpException Если склад не был найден
+     * @throws NotFoundHttpException Если продукт не найден
      * @throws StaleObjectException
      */
     public function actionDelete(int $id): Response
@@ -174,15 +174,15 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Метод поиска склада.
+     * Метод поиска продукта.
      *
-     * @param int $id Идентификатор склада
-     * @return Warehouse
-     * @throws NotFoundHttpException Если склад не был найден
+     * @param int $id Идентификатор продукта
+     * @return Product
+     * @throws NotFoundHttpException Если продукт не найден
      */
-    protected function findModel(int $id): Warehouse
+    protected function findModel(int $id): Product
     {
-        if (($model = $this->warehouse::findOne(['id' => $id])) !== null) {
+        if (($model = $this->product::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

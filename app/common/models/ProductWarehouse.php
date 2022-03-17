@@ -23,7 +23,7 @@ class ProductWarehouse extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%product_warehouse}}';
     }
@@ -31,7 +31,7 @@ class ProductWarehouse extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['warehouse_id', 'product_id'], 'required'],
@@ -57,12 +57,12 @@ class ProductWarehouse extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
             'warehouse_id' => 'warehouse ID',
-            'product_id' => 'Product ID',
+            'product_id' => 'product ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -71,7 +71,7 @@ class ProductWarehouse extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -87,7 +87,7 @@ class ProductWarehouse extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getProduct()
+    public function getProduct(): ActiveQuery
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
@@ -97,7 +97,7 @@ class ProductWarehouse extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getWarehouse()
+    public function getWarehouse(): ActiveQuery
     {
         return $this->hasOne(Warehouse::class, ['id' => 'warehouse_id']);
     }

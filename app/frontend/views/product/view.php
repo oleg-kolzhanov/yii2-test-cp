@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/** @var common\models\Warehouse $model Модель склада */
+/* @var $model common\models\Product */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Склады', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Продукты', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="warehouse-view">
+<div class="product-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Вы уверены, что хотите удалить это?',
+                'confirm' => 'Вы уверены, что хотите это удалить ?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -29,9 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'code',
             'name',
+            'description',
+            'cost',
+            'quantity',
+            [
+                'attribute' => 'manufactured_at',
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asDate($model->manufactured_at);
+                },
+            ],
         ],
     ]) ?>
-
 </div>

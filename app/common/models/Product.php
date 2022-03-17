@@ -25,7 +25,7 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%product}}';
     }
@@ -33,7 +33,7 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'manufactured_at'], 'required'],
@@ -48,15 +48,15 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Description',
-            'cost' => 'Cost',
-            'quantity' => 'Quantity',
-            'manufactured_at' => 'Manufactured At',
+            'name' => 'Наименование товара',
+            'description' => 'Описание товара',
+            'cost' => 'Стоимость товара',
+            'quantity' => 'Кол-во штук в наличии',
+            'manufactured_at' => 'Дата изготовления',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -65,7 +65,7 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -81,8 +81,76 @@ class Product extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getProductWarehouses()
+    public function getProductWarehouses(): ActiveQuery
     {
         return $this->hasMany(ProductWarehouse::class, ['product_id' => 'id']);
+    }
+
+    /**
+     * Создание продукта.
+     *
+     * @param string $name Наименование товара
+     * @param string $description Описание товара
+     * @param float $cost Стоимость товара
+     * @param int $quantity Кол-во штук в наличии
+     * @param int $manufacturedAt Дата изготовления
+     * @return Product
+     */
+    public function create(
+        string $name,
+        string $description,
+        float $cost,
+        int $quantity,
+        int $manufacturedAt
+    ): Product
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->cost = $cost;
+        $this->quantity = $quantity;
+        $this->manufactured_at = $manufacturedAt;
+        $this->saveOrFail();
+
+        return $this;
+    }
+
+    /**
+     * Редактирование продукта.
+     *
+     * @param string $name Наименование товара
+     * @param string $description Описание товара
+     * @param float $cost Стоимость товара
+     * @param int $quantity Кол-во штук в наличии
+     * @param int $manufacturedAt Дата изготовления
+     * @return Product
+     */
+    public function edit(
+        string $name,
+        string $description,
+        float $cost,
+        int $quantity,
+        int $manufacturedAt
+    ): Product
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->cost = $cost;
+        $this->quantity = $quantity;
+        $this->manufactured_at = $manufacturedAt;
+        $this->saveOrFail();
+
+        return $this;
+    }
+
+    /**
+     * Сохраняет модель.
+     *
+     * @return void
+     */
+    public function saveOrFail()
+    {
+        if (!$this->save()) {
+            throw new \DomainException('Ошибка добавления склада');
+        }
     }
 }
