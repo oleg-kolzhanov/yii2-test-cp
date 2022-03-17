@@ -52,10 +52,7 @@ class WarehouseSearch extends Warehouse
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
             'code' => $this->code,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['ilike', 'name', $this->name]);

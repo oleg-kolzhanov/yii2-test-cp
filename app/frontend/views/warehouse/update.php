@@ -2,20 +2,21 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\Warehouse */
+/** @var yii\web\View $this */
+/** @var common\models\WarehouseForm $form Форма склада */
+/** @var common\models\Warehouse $model Модель склада */
 
-$this->title = 'Update warehouse: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Warehouses', 'url' => ['index']];
+$this->title = 'Обновить склад: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Склады', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Обновить';
 ?>
 <div class="warehouse-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'model' => $form,
     ]) ?>
 
 </div>

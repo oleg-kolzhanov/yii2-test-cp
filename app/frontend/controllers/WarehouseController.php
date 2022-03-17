@@ -8,6 +8,7 @@ use common\models\WarehouseForm;
 use common\services\WarehouseService;
 use Yii;
 use yii\base\Module;
+use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -18,6 +19,11 @@ use yii\web\Response;
  */
 class WarehouseController extends Controller
 {
+    /**
+     * @var Warehouse Модель склада
+     */
+    private $warehouse;
+
     /**
      * @var WarehouseSearch Модель данных накладных склада и поиска по ним
      */
@@ -33,6 +39,7 @@ class WarehouseController extends Controller
      *
      * @param string $id Идентификатор контроллера
      * @param Module $module Модуль приложения
+     * @param Warehouse $warehouse Модель склада
      * @param WarehouseSearch $warehouseSearch Модель данных накладных склада и поиска по ним
      * @param WarehouseService $warehouseService Сервис склада
      * @param $config
@@ -40,12 +47,14 @@ class WarehouseController extends Controller
     public function __construct(
         $id,
         $module,
+        Warehouse $warehouse,
         WarehouseSearch $warehouseSearch,
         WarehouseService $warehouseService,
         $config = []
     )
     {
         parent::__construct($id, $module, $config);
+        $this->warehouse = $warehouse;
         $this->warehouseSearch = $warehouseSearch;
         $this->warehouseService = $warehouseService;
     }
@@ -103,7 +112,6 @@ class WarehouseController extends Controller
     public function actionCreate()
     {
         $form = new WarehouseForm();
-
         if ($this->request->isPost) {
             if ($form->load($this->request->post()) && $form->validate()) {
                 try {
@@ -115,7 +123,6 @@ class WarehouseController extends Controller
                     Yii::$app->session->setFlash('error', $e->getMessage());
                 }
             }
-            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -126,20 +133,27 @@ class WarehouseController extends Controller
     /**
      * Обновление склада.
      *
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
+     * @param int $id Идентификатор склада
      * @return string|Response
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws NotFoundHttpException Если склад не был найден
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
-
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $form = new WarehouseForm($model);
+        if ($this->request->isPost && $form->load($this->request->post()) && $form->validate()) {
+            try {
+                $warehouse = $this->warehouseService->edit($model->id, $form);
+                Yii::$app->session->setFlash('success', 'Склад был успешно обновлён');
+                return $this->redirect(['view', 'id' => $warehouse->id]);
+            } catch (\DomainException $e) {
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
         }
 
         return $this->render('update', [
+            'form' => $form,
             'model' => $model,
         ]);
     }
@@ -147,12 +161,12 @@ class WarehouseController extends Controller
     /**
      * Удаление склада.
      *
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
+     * @param int $id Идентификатор склада
      * @return Response
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws NotFoundHttpException Если склад не был найден
+     * @throws StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id): Response
     {
         $this->findModel($id)->delete();
 
@@ -162,14 +176,13 @@ class WarehouseController extends Controller
     /**
      * Метод поиска склада.
      *
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Warehouse the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param int $id Идентификатор склада
+     * @return Warehouse
+     * @throws NotFoundHttpException Если склад не был найден
      */
-    protected function findModel($id)
+    protected function findModel(int $id): Warehouse
     {
-        if (($model = Warehouse::findOne(['id' => $id])) !== null) {
+        if (($model = $this->warehouse::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

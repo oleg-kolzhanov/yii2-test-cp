@@ -20,16 +20,29 @@ class WarehouseForm extends Model
     public $name;
 
     /**
+     * Конструктор формы.
+     *
+     * @param Warehouse|null $warehouse Модель склада
+     * @param $config
+     */
+    public function __construct(Warehouse $warehouse = null, $config = [])
+    {
+        $this->code = $warehouse->code;
+        $this->name = $warehouse->name;
+        parent::__construct($config);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules(): array
     {
         return [
             [['code', 'name'], 'required'],
-            [['code', 'created_at', 'updated_at'], 'default', 'value' => null],
-            [['code', 'created_at', 'updated_at'], 'integer'],
+            [['code'], 'default', 'value' => null],
+            [['code'], 'integer'],
             [['name'], 'string', 'max' => 150],
-            [['code'], 'unique'],
+//            ['code', 'unique', 'targetClass' => '\common\models\Warehouse', 'message' => 'Такой код уже существует.'],
         ];
     }
 

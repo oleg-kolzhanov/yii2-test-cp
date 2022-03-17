@@ -25,7 +25,7 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%product}}';
     }
@@ -33,7 +33,7 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'manufactured_at'], 'required'],
@@ -48,7 +48,7 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -65,7 +65,7 @@ class Product extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -81,7 +81,7 @@ class Product extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getProductWarehouses()
+    public function getProductWarehouses(): ActiveQuery
     {
         return $this->hasMany(ProductWarehouse::class, ['product_id' => 'id']);
     }
