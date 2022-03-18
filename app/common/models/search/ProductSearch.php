@@ -19,10 +19,10 @@ class ProductSearch extends Product
     public function rules(): array
     {
         return [
-            [['id', 'quantity'], 'integer'],
+//            [['id', 'quantity'], 'integer'],
             [['manufactured_at'], 'string'],
             [['name', 'description'], 'safe'],
-            [['cost'], 'number'],
+//            [['cost'], 'number'],
         ];
     }
 
@@ -59,10 +59,10 @@ class ProductSearch extends Product
             $query->andFilterWhere(['to_timestamp(' . Product::tableName() . '.manufactured_at)::date' => Yii::$app->formatter->asDate($this->manufactured_at, 'php:yy-m-d')]);
         }
 
-        $query->andFilterWhere([
-            'cost' => $this->cost,
-            'quantity' => $this->quantity,
-        ]);
+//        $query->andFilterWhere([
+//            'cost' => $this->cost,
+//            'quantity' => $this->quantity,
+//        ]);
 
         $query->andFilterWhere(['ilike', 'name', $this->name])
             ->andFilterWhere(['ilike', 'description', $this->description]);

@@ -12,6 +12,8 @@ use yii\db\ActiveRecord;
  * @property int $id Идентификатор связи склада с продуктом
  * @property int $warehouse_id Идентификатор склада
  * @property int $product_id Идентификатор продукта
+ * @property float|null $cost Стоимость товара
+ * @property int|null $quantity Кол-во штук в наличии
  * @property int $created_at Временная метка создания записи
  * @property int $updated_at Временная метка обновления записи
  *
@@ -34,23 +36,12 @@ class ProductWarehouse extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['warehouse_id', 'product_id'], 'required'],
-            [['warehouse_id', 'product_id', 'created_at', 'updated_at'], 'default', 'value' => null],
-            [['warehouse_id', 'product_id', 'created_at', 'updated_at'], 'integer'],
-            [
-                ['product_id'],
-                'exist',
-                'skipOnError' => true,
-                'targetClass' => Product::class,
-                'targetAttribute' => ['product_id' => 'id']
-            ],
-            [
-                ['warehouse_id'],
-                'exist',
-                'skipOnError' => true,
-                'targetClass' => Warehouse::class,
-                'targetAttribute' => ['warehouse_id' => 'id']
-            ],
+            [['warehouse_id', 'product_id', 'created_at', 'updated_at'], 'required'],
+            [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'default', 'value' => null],
+            [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'integer'],
+            [['cost'], 'number'],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['warehouse_id'], 'exist', 'skipOnError' => true, 'targetClass' => Warehouse::className(), 'targetAttribute' => ['warehouse_id' => 'id']],
         ];
     }
 

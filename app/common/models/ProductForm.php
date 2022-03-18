@@ -3,6 +3,7 @@
 namespace common\models;
 
 use yii\base\Model;
+use yii\db\ActiveRecord;
 
 /**
  * Форма продукта.
@@ -19,21 +20,23 @@ class ProductForm extends Model
      */
     public $description;
 
-    /**
-     * @var float Стоимость товара
-     */
     public $cost;
 
-    /**
-     * @var int Кол-во штук в наличии
-     */
     public $quantity;
+
+//    /**
+//     * @var array[] Цены с количеством
+//     */
+//    public $prices;
 
     /**
      * @var string Дата изготовления
      */
     public $manufactured_at;
 
+    /**
+     * @var array|ActiveRecord[] Все склады
+     */
     public $warehouses;
 
     /**
@@ -45,10 +48,17 @@ class ProductForm extends Model
     public function __construct(Product $product = null, $config = [])
     {
         $this->warehouses = Warehouse::find()->all();
+
+        /** @var Warehouse $warehouse */
+        foreach ($this->warehouses as $warehouse) {
+//            $this->prices[$warehouse->id]['cost'] = $product->prices[$warehouse->id]['cost'];
+//            $this->prices[$warehouse->id]['quantity'] = $product->prices[$warehouse->id]['quantity'];
+            $this->cost[$warehouse->id] = $product->prices[$warehouse->id]['cost'];
+            $this->quantity[$warehouse->id] = $product->prices[$warehouse->id]['quantity'];
+        }
+
         $this->name = $product->name;
         $this->description = $product->description;
-        $this->cost = $product->cost;
-        $this->quantity = $product->quantity;
         $this->manufactured_at = $product->manufactured_at;
         parent::__construct($config);
     }
@@ -60,12 +70,18 @@ class ProductForm extends Model
     {
         return [
             [['name', 'manufactured_at'], 'required'],
-            [['cost'], 'number'],
-            [['quantity', 'manufactured_at'], 'default', 'value' => null],
-            [['quantity'], 'integer'],
+            [['manufactured_at'], 'default', 'value' => null],
             [['manufactured_at'], 'string'],
             [['name'], 'string', 'max' => 150],
             [['description'], 'string', 'max' => 1500],
+//            [['prices'], 'each', 'rule' => ['number']],
+//            [['prices'], 'each', 'rule' => ['integer']],
+//            ['prices', 'number', 'message' => 'Значение должно быть числом.'],
+
+//            ['prices', 'number', 'when' => function ($model) {
+//                return false;
+////                return is_float($model->prices);
+//            }],
         ];
     }
 
@@ -79,8 +95,6 @@ class ProductForm extends Model
         return [
             'name' => 'Наименование товара',
             'description' => 'Описание товара',
-            'cost' => 'Стоимость товара',
-            'quantity' => 'Кол-во штук в наличии',
             'manufactured_at' => 'Дата изготовления',
         ];
     }

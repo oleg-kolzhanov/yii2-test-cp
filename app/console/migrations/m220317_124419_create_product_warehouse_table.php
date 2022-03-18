@@ -21,6 +21,8 @@ class m220317_124419_create_product_warehouse_table extends Migration
             'id' => $this->primaryKey()->comment('Идентификатор связи склада с продуктом'),
             'warehouse_id' => $this->integer()->notNull()->comment('Идентификатор склада'),
             'product_id' => $this->integer()->notNull()->comment('Идентификатор продукта'),
+            'cost' => $this->float()->null()->comment('Стоимость товара'),
+            'quantity' => $this->integer()->null()->comment('Кол-во штук в наличии'),
             'created_at' => $this->integer()->notNull()->comment('Временная метка создания записи'),
             'updated_at' => $this->integer()->notNull()->comment('Временная метка обновления записи'),
         ]);

@@ -1,44 +1,52 @@
 <?php
 
+use common\models\Warehouse;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var common\models\Product $model Модель продукта */
+/** @var common\models\ProductForm $model Форма продукта */
 /** @var yii\widgets\ActiveForm $form */
-//var_dump($model->warehouses);die();
 ?>
 <div class="product-form">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'enableClientValidation' => true,
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
-<!--    --><?//= $form->field($model, 'cost')->textInput() ?>
-<!---->
-<!--    --><?//= $form->field($model, 'quantity')->textInput() ?>
-
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Наименование склада</th>
-            <th scope="col">Стоимость</th>
-            <th scope="col">Количество</th>
-        </tr>
-        </thead>
-        <?php foreach ($model->warehouses as $key => $warehouse): ?>
+    <table class="table table-bordered">
+        <?php /** @var Warehouse $warehouse */ ?>
+        <?php foreach ($model->warehouses as $warehouse): ?>
             <tbody>
-                <tr>
-                    <td><?= $warehouse->name ?></td>
-                </tr>
-                <tr>
-                    <td><?= $form->field($model, 'cost')->textInput() ?></td>
-                </tr>
-                <tr>
-                    <td><?= $form->field($model, 'quantity')->textInput() ?></td>
-                </tr>
+            <tr>
+                <td><?= $warehouse->name ?></td>
+                <td>
+<!--                    --><?//=
+//                        $form->field($model, 'prices[' . $warehouse->id . '][cost]')
+//                            ->textInput()->label('Стоимость товара')
+//                    ?>
+
+                    <?=
+                        $form->field($model, 'cost[' . $warehouse->id . ']')
+                            ->textInput()->label('Стоимость товара')
+                    ?>
+                </td>
+                <td>
+<!--                    --><?//=
+//                        $form->field($model, 'prices[' . $warehouse->id . '][quantity]')
+//                            ->textInput()->label('Кол-во штук в наличии')
+//                    ?>
+
+                    <?=
+                        $form->field($model, 'quantity[' . $warehouse->id . ']')
+                            ->textInput()->label('Кол-во штук в наличии')
+                    ?>
+                </td>
+            </tr>
             </tbody>
         <?php endforeach ?>
     </table>

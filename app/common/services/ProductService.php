@@ -18,6 +18,7 @@ class ProductService
      */
     public function create(ProductForm $form): Product
     {
+        var_dump($form);die();
         $product = new Product();
         $product->create(
             $form->name,
