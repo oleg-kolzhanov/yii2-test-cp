@@ -25,7 +25,7 @@ class WarehouseController extends Controller
     private $warehouse;
 
     /**
-     * @var WarehouseSearch Модель данных склада и поиска по ним
+     * @var WarehouseSearch Модель данных накладных склада и поиска по ним
      */
     private $warehouseSearch;
 
