@@ -25,24 +25,14 @@ use yii\bootstrap4\ActiveForm;
             <tr>
                 <td><?= $warehouse->name ?></td>
                 <td>
-<!--                    --><?//=
-//                        $form->field($model, 'prices[' . $warehouse->id . '][cost]')
-//                            ->textInput()->label('Стоимость товара')
-//                    ?>
-
                     <?=
-                        $form->field($model, 'cost[' . $warehouse->id . ']')
+                        $form->field($model, 'prices[' . $warehouse->id . '][cost]')
                             ->textInput()->label('Стоимость товара')
                     ?>
                 </td>
                 <td>
-<!--                    --><?//=
-//                        $form->field($model, 'prices[' . $warehouse->id . '][quantity]')
-//                            ->textInput()->label('Кол-во штук в наличии')
-//                    ?>
-
                     <?=
-                        $form->field($model, 'quantity[' . $warehouse->id . ']')
+                        $form->field($model, 'prices[' . $warehouse->id . '][quantity]')
                             ->textInput()->label('Кол-во штук в наличии')
                     ?>
                 </td>

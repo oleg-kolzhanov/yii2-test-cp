@@ -8,6 +8,7 @@ use common\models\search\ProductSearch;
 use common\services\ProductService;
 use Yii;
 use yii\base\Module;
+use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -108,6 +109,7 @@ class ProductController extends Controller
      * Создание продукта.
      *
      * @return string|Response
+     * @throws Exception
      */
     public function actionCreate()
     {
@@ -115,7 +117,8 @@ class ProductController extends Controller
         if ($this->request->isPost) {
             if ($form->load($this->request->post()) && $form->validate()) {
                 try {
-                    $product = $this->productService->create($form);
+                    $post = $this->request->post()['ProductForm'];
+                    $product = $this->productService->create($form, $post['prices']);
                     Yii::$app->session->setFlash('success', 'Продукт был успешно добавлен');
                     return $this->redirect(['view', 'id' => $product->id]);
                 } catch (\DomainException $e) {
@@ -135,6 +138,7 @@ class ProductController extends Controller
      *
      * @param int $id Идентификатор продукта
      * @return string|Response
+     * @throws Exception
      * @throws NotFoundHttpException Если продукт не найден
      */
     public function actionUpdate(int $id)
@@ -143,7 +147,8 @@ class ProductController extends Controller
         $form = new ProductForm($model);
         if ($this->request->isPost && $form->load($this->request->post()) && $form->validate()) {
             try {
-                $product = $this->productService->edit($model->id, $form);
+                $post = $this->request->post()['ProductForm'];
+                $product = $this->productService->edit($model->id, $form, $post['prices']);
                 Yii::$app->session->setFlash('success', 'Продукт был успешно обновлён');
                 return $this->redirect(['view', 'id' => $product->id]);
             } catch (\DomainException $e) {

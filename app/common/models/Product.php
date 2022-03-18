@@ -95,9 +95,11 @@ class Product extends ActiveRecord
     }
 
     /**
+     * Возвращает связь с ценами и количеством.
+     *
      * @return ActiveQuery
      */
-    public function getPrices()
+    public function getPrices(): ActiveQuery
     {
         return $this->hasMany(ProductWarehouse::class, ['product_id' => 'id']);
     }
@@ -107,23 +109,17 @@ class Product extends ActiveRecord
      *
      * @param string $name Наименование товара
      * @param string $description Описание товара
-     * @param float $cost Стоимость товара
-     * @param int $quantity Кол-во штук в наличии
      * @param int $manufacturedAt Дата изготовления
      * @return Product
      */
     public function create(
         string $name,
         string $description,
-        float $cost,
-        int $quantity,
         int $manufacturedAt
     ): Product
     {
         $this->name = $name;
         $this->description = $description;
-        $this->cost = $cost;
-        $this->quantity = $quantity;
         $this->manufactured_at = $manufacturedAt;
         $this->saveOrFail();
 
@@ -135,23 +131,17 @@ class Product extends ActiveRecord
      *
      * @param string $name Наименование товара
      * @param string $description Описание товара
-     * @param float $cost Стоимость товара
-     * @param int $quantity Кол-во штук в наличии
      * @param int $manufacturedAt Дата изготовления
      * @return Product
      */
     public function edit(
         string $name,
         string $description,
-        float $cost,
-        int $quantity,
         int $manufacturedAt
     ): Product
     {
         $this->name = $name;
         $this->description = $description;
-        $this->cost = $cost;
-        $this->quantity = $quantity;
         $this->manufactured_at = $manufacturedAt;
         $this->saveOrFail();
 
@@ -166,7 +156,7 @@ class Product extends ActiveRecord
     public function saveOrFail()
     {
         if (!$this->save()) {
-            throw new \DomainException('Ошибка добавления склада');
+            throw new \DomainException('Ошибка сохранения продукта');
         }
     }
 }

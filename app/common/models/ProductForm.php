@@ -20,14 +20,10 @@ class ProductForm extends Model
      */
     public $description;
 
-    public $cost;
-
-    public $quantity;
-
-//    /**
-//     * @var array[] Цены с количеством
-//     */
-//    public $prices;
+    /**
+     * @var array[] Цены с количеством
+     */
+    public $prices;
 
     /**
      * @var string Дата изготовления
@@ -49,12 +45,12 @@ class ProductForm extends Model
     {
         $this->warehouses = Warehouse::find()->all();
 
+        $prices = $product->getPrices()->indexBy('warehouse_id')->all();
+
         /** @var Warehouse $warehouse */
         foreach ($this->warehouses as $warehouse) {
-//            $this->prices[$warehouse->id]['cost'] = $product->prices[$warehouse->id]['cost'];
-//            $this->prices[$warehouse->id]['quantity'] = $product->prices[$warehouse->id]['quantity'];
-            $this->cost[$warehouse->id] = $product->prices[$warehouse->id]['cost'];
-            $this->quantity[$warehouse->id] = $product->prices[$warehouse->id]['quantity'];
+            $this->prices[$warehouse->id]['cost'] = $prices[$warehouse->id]['cost'];
+            $this->prices[$warehouse->id]['quantity'] = $prices[$warehouse->id]['quantity'];
         }
 
         $this->name = $product->name;

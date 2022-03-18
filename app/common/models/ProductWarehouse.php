@@ -36,7 +36,7 @@ class ProductWarehouse extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['warehouse_id', 'product_id', 'created_at', 'updated_at'], 'required'],
+            [['warehouse_id', 'product_id'], 'required'],
             [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'integer'],
             [['cost'], 'number'],
@@ -91,5 +91,67 @@ class ProductWarehouse extends ActiveRecord
     public function getWarehouse(): ActiveQuery
     {
         return $this->hasOne(Warehouse::class, ['id' => 'warehouse_id']);
+    }
+
+    /**
+     * Создание склада продукта.
+     *
+     * @param int $warehouseId Идентификатор склада
+     * @param int $productId Идентификатор продукта
+     * @param float $cost Стоимость товара
+     * @param int $quantity Кол-во штук в наличии
+     * @return ProductWarehouse
+     */
+    public function create(
+        int $warehouseId,
+        int $productId,
+        float $cost,
+        int $quantity
+    ): ProductWarehouse
+    {
+        $this->warehouse_id = $warehouseId;
+        $this->product_id = $productId;
+        $this->cost = empty($cost) ? null : $cost;
+        $this->quantity = empty($quantity) ? null : $quantity;
+        $this->saveOrFail();
+
+        return $this;
+    }
+
+    /**
+     * Создание склада продукта.
+     *
+     * @param int $warehouseId Идентификатор склада
+     * @param int $productId Идентификатор продукта
+     * @param float $cost Стоимость товара
+     * @param int $quantity Кол-во штук в наличии
+     * @return ProductWarehouse
+     */
+    public function edit(
+        int $warehouseId,
+        int $productId,
+        float $cost,
+        int $quantity
+    ): ProductWarehouse
+    {
+        $this->warehouse_id = $warehouseId;
+        $this->product_id = $productId;
+        $this->cost = empty($cost) ? null : $cost;
+        $this->quantity = empty($quantity) ? null : $quantity;
+        $this->saveOrFail();
+
+        return $this;
+    }
+
+    /**
+     * Сохраняет модель.
+     *
+     * @return void
+     */
+    public function saveOrFail()
+    {
+        if (!$this->save()) {
+            throw new \DomainException('Ошибка добавления продукта на склад');
+        }
     }
 }
