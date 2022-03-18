@@ -42,6 +42,12 @@ return [
             'rules' => [
             ],
         ],
+        'formatter' => [
+            'dateFormat' => 'php: d.m.yy',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => ' ',
+            'currencyCode' => 'RUR',
+        ],
     ],
     'params' => $params,
 ];

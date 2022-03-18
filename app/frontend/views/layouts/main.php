@@ -39,7 +39,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
         $menuItems[] = ['label' => 'Склады', 'url' => ['warehouse/index']];
-        $menuItems[] = ['label' => 'Товары', 'url' => ['#']];
+        $menuItems[] = ['label' => 'Товары', 'url' => ['product/index']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
             . Html::submitButton(
