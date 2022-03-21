@@ -14,15 +14,27 @@ use common\models\Product;
 class ProductSearch extends Product
 {
     /**
+     * @var string Начальная дата производства
+     */
+    public $date_from;
+
+    /**
+     * @var string Конечная дата производства
+     */
+    public $date_to;
+
+    /**
+     * @var string Цены и склады
+     */
+    public $prices;
+
+    /**
      * {@inheritdoc}
      */
     public function rules(): array
     {
         return [
-//            [['id', 'quantity'], 'integer'],
-            [['manufactured_at'], 'string'],
-            [['name', 'description'], 'safe'],
-//            [['cost'], 'number'],
+            [['name', 'date_from', 'date_to'], 'string'],
         ];
     }
 
@@ -43,10 +55,13 @@ class ProductSearch extends Product
      */
     public function search(array $params): ActiveDataProvider
     {
-        $query = Product::find();
+        $query = Product::find()
+            ->with('prices.warehouse')
+            ->orderBy(['manufactured_at' => SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => false,
         ]);
 
         $this->load($params);
@@ -55,17 +70,12 @@ class ProductSearch extends Product
             return $dataProvider;
         }
 
-        if (strtotime($this->manufactured_at) > 0) {
-            $query->andFilterWhere(['to_timestamp(' . Product::tableName() . '.manufactured_at)::date' => Yii::$app->formatter->asDate($this->manufactured_at, 'php:yy-m-d')]);
+        if (strtotime($this->date_from) > 0 || strtotime($this->date_to) > 0) {
+            $query->andFilterWhere(['>=', 'to_timestamp(' . Product::tableName() . '.manufactured_at)::date', Yii::$app->formatter->asDate($this->date_from, 'php:yy-m-d')]);
+            $query->andFilterWhere(['<=', 'to_timestamp(' . Product::tableName() . '.manufactured_at)::date', Yii::$app->formatter->asDate($this->date_to, 'php:yy-m-d')]);
         }
 
-//        $query->andFilterWhere([
-//            'cost' => $this->cost,
-//            'quantity' => $this->quantity,
-//        ]);
-
-        $query->andFilterWhere(['ilike', 'name', $this->name])
-            ->andFilterWhere(['ilike', 'description', $this->description]);
+        $query->andFilterWhere(['ilike', 'name', $this->name]);
 
         return $dataProvider;
     }

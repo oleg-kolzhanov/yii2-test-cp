@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\controllers\BaseController;
 use common\models\Warehouse;
 use common\models\search\WarehouseSearch;
 use common\models\WarehouseForm;
@@ -9,7 +10,6 @@ use common\services\WarehouseService;
 use Yii;
 use yii\base\Module;
 use yii\db\StaleObjectException;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -17,7 +17,7 @@ use yii\web\Response;
 /**
  * Контролер склада.
  */
-class WarehouseController extends Controller
+class WarehouseController extends BaseController
 {
     /**
      * @var Warehouse Модель склада
@@ -25,7 +25,7 @@ class WarehouseController extends Controller
     private $warehouse;
 
     /**
-     * @var WarehouseSearch Модель данных накладных склада и поиска по ним
+     * @var WarehouseSearch Модель данных склада и поиска по ним
      */
     private $warehouseSearch;
 
@@ -40,7 +40,7 @@ class WarehouseController extends Controller
      * @param string $id Идентификатор контроллера
      * @param Module $module Модуль приложения
      * @param Warehouse $warehouse Модель склада
-     * @param WarehouseSearch $warehouseSearch Модель данных накладных склада и поиска по ним
+     * @param WarehouseSearch $warehouseSearch Модель данных склада и поиска по ним
      * @param WarehouseService $warehouseService Сервис склада
      * @param $config
      */
@@ -111,7 +111,7 @@ class WarehouseController extends Controller
      */
     public function actionCreate()
     {
-        $form = new WarehouseForm();
+        $form = new WarehouseForm(new Warehouse());
         if ($this->request->isPost) {
             if ($form->load($this->request->post()) && $form->validate()) {
                 try {

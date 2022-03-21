@@ -1,8 +1,7 @@
 <?php
+
 namespace api\controllers;
 
-use common\models\Product;
-use common\models\Warehouse;
 use yii\rest\ActiveController;
 
 /**
@@ -20,12 +19,27 @@ class ProductController extends ActiveController
 
     /**
      * Сериализация данных.
+     *
      * @var array
      */
     public $serializer = [
         'class' => 'yii\rest\Serializer',
         'collectionEnvelope' => 'items',
     ];
+
+    /**
+     * Отключаем стандартные Action.
+     *
+     * Ниже, задаём свои.
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        $actions = parent::actions();
+
+        unset($actions['delete'], $actions['create'], $actions['update'], $actions['index']);
+        return $actions;
+    }
 
     /**
      * Возвращает список товаров.
@@ -35,6 +49,6 @@ class ProductController extends ActiveController
     public function actionIndex()
     {
         $model = new $this->modelClass();
-        return $model->with('prices');
+        return $model::find()->with('prices')->asArray()->all();
     }
 }

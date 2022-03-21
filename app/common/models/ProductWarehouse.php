@@ -40,8 +40,20 @@ class ProductWarehouse extends ActiveRecord
             [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'integer'],
             [['cost'], 'number'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['warehouse_id'], 'exist', 'skipOnError' => true, 'targetClass' => Warehouse::className(), 'targetAttribute' => ['warehouse_id' => 'id']],
+            [
+                ['product_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Product::class,
+                'targetAttribute' => ['product_id' => 'id']
+            ],
+            [
+                ['warehouse_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Warehouse::class,
+                'targetAttribute' => ['warehouse_id' => 'id']
+            ],
         ];
     }
 
@@ -54,8 +66,10 @@ class ProductWarehouse extends ActiveRecord
             'id' => 'ID',
             'warehouse_id' => 'warehouse ID',
             'product_id' => 'product ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'cost' => 'Стоимость товара',
+            'quantity' => 'Кол-во штук в наличии',
+            'created_at' => 'Временная метка создания записи',
+            'updated_at' => 'Временная метка обновления записи',
         ];
     }
 
@@ -94,7 +108,7 @@ class ProductWarehouse extends ActiveRecord
     }
 
     /**
-     * Создание склада продукта.
+     * Создание склада продукта
      *
      * @param int $warehouseId Идентификатор склада
      * @param int $productId Идентификатор продукта
@@ -102,7 +116,7 @@ class ProductWarehouse extends ActiveRecord
      * @param int $quantity Кол-во штук в наличии
      * @return ProductWarehouse
      */
-    public function create(
+    public function saveOrFail(
         int $warehouseId,
         int $productId,
         float $cost,
@@ -113,45 +127,10 @@ class ProductWarehouse extends ActiveRecord
         $this->product_id = $productId;
         $this->cost = empty($cost) ? null : $cost;
         $this->quantity = empty($quantity) ? null : $quantity;
-        $this->saveOrFail();
-
-        return $this;
-    }
-
-    /**
-     * Создание склада продукта.
-     *
-     * @param int $warehouseId Идентификатор склада
-     * @param int $productId Идентификатор продукта
-     * @param float $cost Стоимость товара
-     * @param int $quantity Кол-во штук в наличии
-     * @return ProductWarehouse
-     */
-    public function edit(
-        int $warehouseId,
-        int $productId,
-        float $cost,
-        int $quantity
-    ): ProductWarehouse
-    {
-        $this->warehouse_id = $warehouseId;
-        $this->product_id = $productId;
-        $this->cost = empty($cost) ? null : $cost;
-        $this->quantity = empty($quantity) ? null : $quantity;
-        $this->saveOrFail();
-
-        return $this;
-    }
-
-    /**
-     * Сохраняет модель.
-     *
-     * @return void
-     */
-    public function saveOrFail()
-    {
         if (!$this->save()) {
             throw new \DomainException('Ошибка добавления продукта на склад');
         }
+
+        return $this;
     }
 }

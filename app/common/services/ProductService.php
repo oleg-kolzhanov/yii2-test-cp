@@ -25,20 +25,19 @@ class ProductService
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-//            $this->priceDataValidate($prices);
             $product = new Product();
-            $createdProduct = $product->create(
+            $createdProduct = $product->saveOrFail(
                 $form->name,
                 $form->description,
                 strtotime($form->manufactured_at)
             );
             foreach ($prices as $warehouseId => $price) {
                 $productWarehouse = new ProductWarehouse();
-                $productWarehouse->create(
-                    $warehouseId,
+                $productWarehouse->saveOrFail(
+                    (int)$warehouseId,
                     $createdProduct->id,
-                    $price['cost'],
-                    $price['quantity']
+                    (float)$price['cost'],
+                    (int)$price['quantity']
                 );
             }
         } catch (\DomainException $e) {
@@ -63,10 +62,8 @@ class ProductService
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-//            $this->priceDataValidate($prices);
-
             $product = $this->getProduct($productId);
-            $product->edit(
+            $product->saveOrFail(
                 $form->name,
                 $form->description,
                 strtotime($form->manufactured_at)
@@ -74,7 +71,7 @@ class ProductService
             ProductWarehouse::deleteAll(['product_id' => $product->id]);
             foreach ($prices as $warehouseId => $price) {
                 $productWarehouse = new ProductWarehouse();
-                $productWarehouse->edit(
+                $productWarehouse->saveOrFail(
                     (int)$warehouseId,
                     $product->id,
                     (float)$price['cost'],
@@ -104,18 +101,4 @@ class ProductService
         }
         return $product;
     }
-
-//    /**
-//     * Валидация цен и количеств.
-//     *
-//     * @param array $prices Цены и количества
-//     */
-//    public function priceDataValidate(array $prices)
-//    {
-//        foreach ($prices as $warehouseId => $price) {
-//            if (!is_float((float)$price['cost'])) {
-//                throw new \DomainException('');
-//            }
-//        }
-//    }
 }

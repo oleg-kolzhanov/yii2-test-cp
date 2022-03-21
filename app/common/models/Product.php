@@ -17,6 +17,8 @@ use yii\db\ActiveRecord;
  * @property int $updated_at Временная метка обновления записи
  *
  * @property ProductWarehouse[] $productWarehouses Склады продукта
+ * @property Warehouse[] $warehouses Склады
+ * @property ProductWarehouse[] $prices Цены и склады
  */
 class Product extends ActiveRecord
 {
@@ -51,11 +53,9 @@ class Product extends ActiveRecord
             'id' => 'ID',
             'name' => 'Наименование товара',
             'description' => 'Описание товара',
-//            'cost' => 'Стоимость товара',
-//            'quantity' => 'Кол-во штук в наличии',
             'manufactured_at' => 'Дата изготовления',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'created_at' => 'Временная метка создания записи',
+            'updated_at' => 'Временная метка обновления записи',
         ];
     }
 
@@ -105,14 +105,14 @@ class Product extends ActiveRecord
     }
 
     /**
-     * Создание продукта.
+     * Сохранение продукта.
      *
      * @param string $name Наименование товара
      * @param string $description Описание товара
      * @param int $manufacturedAt Дата изготовления
      * @return Product
      */
-    public function create(
+    public function saveOrFail(
         string $name,
         string $description,
         int $manufacturedAt
@@ -121,42 +121,10 @@ class Product extends ActiveRecord
         $this->name = $name;
         $this->description = $description;
         $this->manufactured_at = $manufacturedAt;
-        $this->saveOrFail();
-
-        return $this;
-    }
-
-    /**
-     * Редактирование продукта.
-     *
-     * @param string $name Наименование товара
-     * @param string $description Описание товара
-     * @param int $manufacturedAt Дата изготовления
-     * @return Product
-     */
-    public function edit(
-        string $name,
-        string $description,
-        int $manufacturedAt
-    ): Product
-    {
-        $this->name = $name;
-        $this->description = $description;
-        $this->manufactured_at = $manufacturedAt;
-        $this->saveOrFail();
-
-        return $this;
-    }
-
-    /**
-     * Сохраняет модель.
-     *
-     * @return void
-     */
-    public function saveOrFail()
-    {
         if (!$this->save()) {
             throw new \DomainException('Ошибка сохранения продукта');
         }
+
+        return $this;
     }
 }

@@ -19,14 +19,17 @@ class WarehouseForm extends Model
      */
     public $name;
 
+    protected $warehouse;
+
     /**
      * Конструктор формы.
      *
      * @param Warehouse|null $warehouse Модель склада
      * @param $config
      */
-    public function __construct(Warehouse $warehouse = null, $config = [])
+    public function __construct(Warehouse $warehouse, $config = [])
     {
+        $this->warehouse = $warehouse;
         $this->code = $warehouse->code;
         $this->name = $warehouse->name;
         parent::__construct($config);
@@ -42,7 +45,14 @@ class WarehouseForm extends Model
             [['code'], 'default', 'value' => null],
             [['code'], 'integer'],
             [['name'], 'string', 'max' => 150],
-//            ['code', 'unique', 'targetClass' => '\common\models\Warehouse', 'message' => 'Такой код уже существует.'],
+            ['code', 'unique', 'targetClass' => '\common\models\Warehouse', 'filter' => function ($query) {
+                if (!$this->warehouse->isNewRecord) {
+                    $query->andWhere(['not', ['id' => $this->warehouse->id]]);
+                }
+            }],
+
+
+//            ['code', 'unique', 'targetClass' => '\common\models\Warehouse'],
         ];
     }
 

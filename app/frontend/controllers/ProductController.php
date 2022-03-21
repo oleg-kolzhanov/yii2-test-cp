@@ -2,15 +2,16 @@
 
 namespace frontend\controllers;
 
+use common\controllers\BaseController;
 use common\models\Product;
 use common\models\ProductForm;
 use common\models\search\ProductSearch;
 use common\services\ProductService;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -18,7 +19,7 @@ use yii\web\Response;
 /**
  * Контроллер продукта.
  */
-class ProductController extends Controller
+class ProductController extends BaseController
 {
     /**
      * @var Product Модель продукта
@@ -82,6 +83,7 @@ class ProductController extends Controller
      * Список всех продуктов.
      *
      * @return string
+     * @throws InvalidConfigException
      */
     public function actionIndex(): string
     {

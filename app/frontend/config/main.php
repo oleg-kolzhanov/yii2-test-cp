@@ -11,6 +11,7 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'defaultRoute' => 'product/index',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
@@ -43,7 +44,12 @@ return [
             ],
         ],
         'formatter' => [
-            'dateFormat' => 'php: d.m.yy',
+
+            'dateFormat'     => 'php:d.m.Y',
+            'datetimeFormat' => 'php:d.m.Y в H:i:s',
+            'timeFormat'     => 'php:H:i:s',
+
+//            'dateFormat' => 'php: d.m.yy',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
             'currencyCode' => 'RUR',
