@@ -9,9 +9,14 @@ use yii\db\ActiveQuery;
  */
 class Product extends \common\models\Product
 {
+    /**
+     * Возвращает связь со складами продукта.
+     *
+     * @return ActiveQuery
+     */
     public function getPrices(): ActiveQuery
     {
-        return $this->hasMany(ProductWarehouse::class, ['product_id' => 'id']);
+        return $this->hasMany(Price::class, ['product_id' => 'id']);
     }
 
     /**
@@ -25,11 +30,27 @@ class Product extends \common\models\Product
         unset($fields['id'], $fields['manufactured_at'], $fields['created_at'], $fields['updated_at']);
         return array_merge(
             $fields,
-            [
-                'prices' => function () {
-                    return $this->prices;
-                }
-            ]
+            ['prices']
         );
     }
+
+    /**
+     * Переводит объект в массив.
+     *
+     * @param array $fields
+     * @param array $expand
+     * @param bool $recursive
+     * @return array
+     */
+    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    {
+        $data = [];
+        foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
+            $attribute = is_string($definition) ? $this->$definition : $definition($this, $field);
+
+            $data[$field] = $attribute;
+        }
+        return $data;
+    }
+
 }

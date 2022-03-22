@@ -5,10 +5,13 @@ namespace common\validators;
 use yii\validators\Validator;
 
 /**
- *
+ * Валидатор цены.
  */
 class PriceValidator extends Validator
 {
+    /**
+     * Инициализация.
+     */
     public function init()
     {
         parent::init();
@@ -16,16 +19,16 @@ class PriceValidator extends Validator
         $this->message = 'custom validator.';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
     }
 
     /**
-     * @param $model
-     * @param $attribute
-     * @param $view
-     * @return string
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {

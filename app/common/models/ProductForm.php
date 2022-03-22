@@ -106,16 +106,15 @@ class ProductForm extends Model
         $validator = new NumberValidator();
         $numberPattern = $validator->numberPattern;
         $integerPattern = $validator->integerPattern;
-        foreach ($this->prices as $warehouseId => $price) {
+        foreach ($this->prices as $price) {
             if (!empty($price['cost'])) {
                 if (!preg_match($numberPattern, StringHelper::normalizeNumber($price['cost']))) {
                     $this->addError('prices', '«Стоимость» должно быть числом.');
                 }
             }
-            if (!empty($price['quantity'])) {
-                if (!preg_match($integerPattern, StringHelper::normalizeNumber($price['quantity']))) {
-                    $this->addError('prices', '«Кол-во» должно быть целым числом.');
-                }
+            if (!empty($price['quantity'])
+                && !preg_match($integerPattern, StringHelper::normalizeNumber($price['quantity']))) {
+                $this->addError('prices', '«Кол-во» должно быть целым числом.');
             }
         }
     }

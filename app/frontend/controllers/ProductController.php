@@ -189,7 +189,7 @@ class ProductController extends BaseController
      */
     protected function findModel(int $id): Product
     {
-        if (($model = $this->product::findOne(['id' => $id])) !== null) {
+        if (($model = $this->product::find()->where(['id' => $id])->with('prices.warehouse')->one()) !== null) {
             return $model;
         }
 

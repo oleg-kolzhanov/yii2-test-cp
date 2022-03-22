@@ -32,7 +32,7 @@ $this->title = 'Продукты';
         'columns' => [
             [
                 'attribute' => 'manufactured_at',
-                'value' => function ($model) {
+                'value' => static function ($model) {
                     return Yii::$app->formatter->asDate($model->manufactured_at) . ' г.';
                 },
                 'filter' => DatePicker::widget([
@@ -51,14 +51,14 @@ $this->title = 'Продукты';
             'name',
             [
                 'attribute' => 'description',
-                'value' => function ($model) {
+                'value' => static function ($model) {
                     return StringHelper::truncate($model->description, '50');
                 },
             ],
             [
                 'attribute' => 'prices',
                 'label' => 'Склад и стоимость',
-                'value' => function ($model) {
+                'value' => static function ($model) {
                     $priceAndWarehouse = '';
                     /** @var ProductWarehouse $price */
                     foreach ($model['prices'] as $price) {
@@ -74,7 +74,7 @@ $this->title = 'Продукты';
             ],
             [
                 'class' => ActionColumn::class,
-                'urlCreator' => function ($action, Product $model, $key, $index, $column) {
+                'urlCreator' => static function ($action, Product $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
             ],

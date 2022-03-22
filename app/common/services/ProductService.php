@@ -17,11 +17,11 @@ class ProductService
      * Создание продукта.
      *
      * @param ProductForm $form Форма продукта
-     * @param array $prices Цены и количества
+     * @param array|null $prices Цены и количества
      * @return Product
      * @throws Exception
      */
-    public function create(ProductForm $form, array $prices): Product
+    public function create(ProductForm $form, ?array $prices): Product
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -54,11 +54,11 @@ class ProductService
      *
      * @param int $productId Идентификатор продукта
      * @param ProductForm $form Форма продукта
-     * @param array $prices
+     * @param array|null $prices
      * @return Product
      * @throws Exception
      */
-    public function edit(int $productId, ProductForm $form, array $prices): Product
+    public function edit(int $productId, ProductForm $form, ?array $prices): Product
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {

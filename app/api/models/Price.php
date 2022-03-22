@@ -2,10 +2,12 @@
 
 namespace api\models;
 
+use common\models\ProductWarehouse;
+
 /**
- * Модель склада продукта.
+ * Модель цен продукта.
  */
-class ProductWarehouse extends \common\models\ProductWarehouse
+class Price extends ProductWarehouse
 {
     /**
      * Ресурс склада продукта.

@@ -2,7 +2,9 @@
 
 namespace api\controllers;
 
+use api\models\Product;
 use yii\rest\ActiveController;
+use api\components\Serializer;
 
 /**
  * Контроллер продуктов.
@@ -12,7 +14,7 @@ class ProductController extends ActiveController
     /**
      * @var string $modelClass Модель продуктов
      */
-    public $modelClass = 'api\models\Product';
+    public $modelClass = Product::class;
 
     /**
      * Сериализация данных.
@@ -20,13 +22,7 @@ class ProductController extends ActiveController
      * @var array
      */
     public $serializer = [
-        'class' => 'yii\rest\Serializer',
+        'class' => Serializer::class,
         'collectionEnvelope' => 'data',
     ];
-
-//    public function afterAction($action, $result)
-//    {
-//        $result = parent::afterAction($action, $result);
-//        return $this->serializeData($result);
-//    }
 }
