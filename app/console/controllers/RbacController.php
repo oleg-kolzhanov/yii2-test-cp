@@ -52,7 +52,19 @@ class RbacController extends Controller
             ],
             'administrator' => [
                 'route/app-frontend/site/logout',
-                'route/app-frontend/site/index'
+                'route/app-frontend/site/index',
+
+                'route/app-frontend/warehouse/index',
+                'route/app-frontend/warehouse/create',
+                'route/app-frontend/warehouse/view',
+                'route/app-frontend/warehouse/update',
+                'route/app-frontend/warehouse/delete',
+
+                'route/app-frontend/product/index',
+                'route/app-frontend/product/create',
+                'route/app-frontend/product/view',
+                'route/app-frontend/product/update',
+                'route/app-frontend/product/delete',
             ],
         ];
         foreach ($permission as $role => $routes) {

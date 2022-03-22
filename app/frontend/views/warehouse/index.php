@@ -7,7 +7,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\search\WarehouseSearch */
+/* @var $searchModel common\models\search\WarehouseSearch Модель данных склада и поиска по ним */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Склады';
@@ -25,11 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
             'code',
             'name',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Warehouse $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

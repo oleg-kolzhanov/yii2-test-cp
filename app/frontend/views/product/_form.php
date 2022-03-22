@@ -16,7 +16,7 @@ use yii\bootstrap4\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'description')->textarea(['rows' => 6]); ?>
 
     <table class="table table-bordered">
         <?php /** @var Warehouse $warehouse */ ?>
@@ -25,25 +25,25 @@ use yii\bootstrap4\ActiveForm;
             <tr>
                 <td><?= $warehouse->name ?></td>
                 <td>
-<!--                    --><?//=
-//                        $form->field($model, 'prices[' . $warehouse->id . '][cost]')
-//                            ->textInput()->label('Стоимость товара')
-//                    ?>
-
                     <?=
-                        $form->field($model, 'cost[' . $warehouse->id . ']')
-                            ->textInput()->label('Стоимость товара')
+                    $form->field(
+                        $model,
+                        'prices[' . $warehouse->id . '][cost]',
+                        [
+                            'options' => ['data-cost' => 'true']
+                        ]
+                    )->textInput()->label('Стоимость товара');
                     ?>
                 </td>
                 <td>
-<!--                    --><?//=
-//                        $form->field($model, 'prices[' . $warehouse->id . '][quantity]')
-//                            ->textInput()->label('Кол-во штук в наличии')
-//                    ?>
-
                     <?=
-                        $form->field($model, 'quantity[' . $warehouse->id . ']')
-                            ->textInput()->label('Кол-во штук в наличии')
+                    $form->field(
+                        $model,
+                        'prices[' . $warehouse->id . '][quantity]',
+                        [
+                            'options' => ['data-quantity' => 'true']
+                        ]
+                    )->textInput()->label('Кол-во штук в наличии');
                     ?>
                 </td>
             </tr>
@@ -53,15 +53,16 @@ use yii\bootstrap4\ActiveForm;
 
     <?= $form->field($model, 'manufactured_at')->widget(DatePicker::class, [
         'language' => 'ru',
-//        'name' => 'dp_2',
         'type' => DatePicker::TYPE_COMPONENT_PREPEND,
-        'value' => (is_null($model->manufactured_at)) ?
-            '' :
-            Yii::$app->formatter->asDate($model->manufactured_at),
-        'removeIcon' => 'x',
+        'options' => [
+            'value' => (is_null($model->manufactured_at)) ?
+                date('d.m.Y') :
+                Yii::$app->formatter->asDate($model->manufactured_at),
+        ],
         'pluginOptions' => [
             'autoclose' => true,
-            'format' => 'dd.mm.yyyy',
+            'todayHighlight' => true,
+            'format' => 'dd.mm.yyyy'
         ]
     ]) ?>
 

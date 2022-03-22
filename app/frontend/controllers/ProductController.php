@@ -2,14 +2,16 @@
 
 namespace frontend\controllers;
 
+use common\controllers\BaseController;
 use common\models\Product;
 use common\models\ProductForm;
 use common\models\search\ProductSearch;
 use common\services\ProductService;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Module;
+use yii\db\Exception;
 use yii\db\StaleObjectException;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -17,7 +19,7 @@ use yii\web\Response;
 /**
  * Контроллер продукта.
  */
-class ProductController extends Controller
+class ProductController extends BaseController
 {
     /**
      * @var Product Модель продукта
@@ -81,6 +83,7 @@ class ProductController extends Controller
      * Список всех продуктов.
      *
      * @return string
+     * @throws InvalidConfigException
      */
     public function actionIndex(): string
     {
@@ -108,6 +111,7 @@ class ProductController extends Controller
      * Создание продукта.
      *
      * @return string|Response
+     * @throws Exception
      */
     public function actionCreate()
     {
@@ -115,7 +119,8 @@ class ProductController extends Controller
         if ($this->request->isPost) {
             if ($form->load($this->request->post()) && $form->validate()) {
                 try {
-                    $product = $this->productService->create($form);
+                    $post = $this->request->post()['ProductForm'];
+                    $product = $this->productService->create($form, $post['prices']);
                     Yii::$app->session->setFlash('success', 'Продукт был успешно добавлен');
                     return $this->redirect(['view', 'id' => $product->id]);
                 } catch (\DomainException $e) {
@@ -135,6 +140,7 @@ class ProductController extends Controller
      *
      * @param int $id Идентификатор продукта
      * @return string|Response
+     * @throws Exception
      * @throws NotFoundHttpException Если продукт не найден
      */
     public function actionUpdate(int $id)
@@ -143,7 +149,8 @@ class ProductController extends Controller
         $form = new ProductForm($model);
         if ($this->request->isPost && $form->load($this->request->post()) && $form->validate()) {
             try {
-                $product = $this->productService->edit($model->id, $form);
+                $post = $this->request->post()['ProductForm'];
+                $product = $this->productService->edit($model->id, $form, $post['prices']);
                 Yii::$app->session->setFlash('success', 'Продукт был успешно обновлён');
                 return $this->redirect(['view', 'id' => $product->id]);
             } catch (\DomainException $e) {
@@ -182,7 +189,7 @@ class ProductController extends Controller
      */
     protected function findModel(int $id): Product
     {
-        if (($model = $this->product::findOne(['id' => $id])) !== null) {
+        if (($model = $this->product::find()->where(['id' => $id])->with('prices.warehouse')->one()) !== null) {
             return $model;
         }
 

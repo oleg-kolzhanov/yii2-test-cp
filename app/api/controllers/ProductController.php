@@ -1,40 +1,28 @@
 <?php
+
 namespace api\controllers;
 
-use common\models\Product;
-use common\models\Warehouse;
+use api\models\Product;
 use yii\rest\ActiveController;
+use api\components\Serializer;
 
 /**
- * Базовый REST API контнолер.
- *
- * Class BaseController
- * @package common\controllers
+ * Контроллер продуктов.
  */
 class ProductController extends ActiveController
 {
     /**
      * @var string $modelClass Модель продуктов
      */
-    public $modelClass = 'api\models\Product';
+    public $modelClass = Product::class;
 
     /**
      * Сериализация данных.
+     *
      * @var array
      */
     public $serializer = [
-        'class' => 'yii\rest\Serializer',
-        'collectionEnvelope' => 'items',
+        'class' => Serializer::class,
+        'collectionEnvelope' => 'data',
     ];
-
-    /**
-     * Возвращает список товаров.
-     *
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $model = new $this->modelClass();
-        return $model->with('prices');
-    }
 }

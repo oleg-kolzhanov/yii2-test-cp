@@ -1,5 +1,7 @@
 <?php
 
+use common\components\helpers\PriceHelper;
+use common\models\ProductWarehouse;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -31,8 +33,23 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'name',
             'description',
-            'cost',
-            'quantity',
+            [
+                'attribute' => 'prices',
+                'label' => 'Склад и стоимость',
+                'value' => function ($model) {
+                    $priceAndWarehouse = '';
+                    /** @var ProductWarehouse $price */
+                    foreach ($model['prices'] as $price) {
+                        if (!is_null($price->cost)) {
+                            $priceAndWarehouse .=
+                                $price->warehouse->name . ' — '
+                                . PriceHelper::format($price->cost) . '<br>';
+                        }
+                    }
+                    return $priceAndWarehouse;
+                },
+                'format' => 'raw',
+            ],
             [
                 'attribute' => 'manufactured_at',
                 'value' => function ($model) {

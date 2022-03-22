@@ -4,9 +4,9 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=yii2advanced',
-            'username' => 'root',
-            'password' => '',
+            'dsn' => 'pgsql:host=postgres;dbname=control-panel.ru.test',
+            'username' => 'control-panel.ru.test',
+            'password' => 'secret',
             'charset' => 'utf8',
         ],
         'mailer' => [

@@ -36,12 +36,24 @@ class ProductWarehouse extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['warehouse_id', 'product_id', 'created_at', 'updated_at'], 'required'],
+            [['warehouse_id', 'product_id'], 'required'],
             [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['warehouse_id', 'product_id', 'quantity', 'created_at', 'updated_at'], 'integer'],
             [['cost'], 'number'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['warehouse_id'], 'exist', 'skipOnError' => true, 'targetClass' => Warehouse::className(), 'targetAttribute' => ['warehouse_id' => 'id']],
+            [
+                ['product_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Product::class,
+                'targetAttribute' => ['product_id' => 'id']
+            ],
+            [
+                ['warehouse_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Warehouse::class,
+                'targetAttribute' => ['warehouse_id' => 'id']
+            ],
         ];
     }
 
@@ -54,8 +66,10 @@ class ProductWarehouse extends ActiveRecord
             'id' => 'ID',
             'warehouse_id' => 'warehouse ID',
             'product_id' => 'product ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'cost' => 'Стоимость товара',
+            'quantity' => 'Кол-во штук в наличии',
+            'created_at' => 'Временная метка создания записи',
+            'updated_at' => 'Временная метка обновления записи',
         ];
     }
 
@@ -91,5 +105,32 @@ class ProductWarehouse extends ActiveRecord
     public function getWarehouse(): ActiveQuery
     {
         return $this->hasOne(Warehouse::class, ['id' => 'warehouse_id']);
+    }
+
+    /**
+     * Создание склада продукта.
+     *
+     * @param int $warehouseId Идентификатор склада
+     * @param int $productId Идентификатор продукта
+     * @param float $cost Стоимость товара
+     * @param int $quantity Кол-во штук в наличии
+     * @return ProductWarehouse
+     */
+    public function saveOrFail(
+        int $warehouseId,
+        int $productId,
+        float $cost,
+        int $quantity
+    ): ProductWarehouse
+    {
+        $this->warehouse_id = $warehouseId;
+        $this->product_id = $productId;
+        $this->cost = empty($cost) ? null : $cost;
+        $this->quantity = empty($quantity) ? null : $quantity;
+        if (!$this->save()) {
+            throw new \DomainException('Ошибка добавления продукта на склад');
+        }
+
+        return $this;
     }
 }

@@ -1,8 +1,11 @@
 <?php
 
+use common\components\helpers\PriceHelper;
 use common\models\Product;
+use common\models\ProductWarehouse;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -12,7 +15,6 @@ use yii\grid\GridView;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Продукты';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="product-index">
 
@@ -28,35 +30,53 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'name',
-            'description',
-            'cost',
-            'quantity',
             [
                 'attribute' => 'manufactured_at',
-                'value' => function ($model) {
-                    return Yii::$app->formatter->asDate($model->manufactured_at);
+                'value' => static function ($model) {
+                    return Yii::$app->formatter->asDate($model->manufactured_at) . ' г.';
                 },
                 'filter' => DatePicker::widget([
                     'model' => $searchModel,
-                    'attribute' => 'manufactured_at',
-                    'type' => DatePicker::TYPE_COMPONENT_APPEND,
-                    'options' => [
-                        'placeholder' => '',
-                    ],
-                    'removeIcon' => 'x',
+                    'attribute' => 'date_from',
+                    'attribute2' => 'date_to',
+                    'options' => ['placeholder' => 'Начальная'],
+                    'options2' => ['placeholder' => 'Конечная'],
+                    'type' => DatePicker::TYPE_RANGE,
                     'pluginOptions' => [
-                        'autoclose' => true,
                         'format' => 'dd.mm.yyyy',
-                    ],
-                ]),
+                        'autoclose' => true,
+                    ]
+                ])
+            ],
+            'name',
+            [
+                'attribute' => 'description',
+                'value' => static function ($model) {
+                    return StringHelper::truncate($model->description, '50');
+                },
+            ],
+            [
+                'attribute' => 'prices',
+                'label' => 'Склад и стоимость',
+                'value' => static function ($model) {
+                    $priceAndWarehouse = '';
+                    /** @var ProductWarehouse $price */
+                    foreach ($model['prices'] as $price) {
+                        if (!is_null($price->cost)) {
+                            $priceAndWarehouse .=
+                                $price->warehouse->name . ' — '
+                                . PriceHelper::format($price->cost) . '<br>';
+                        }
+                    }
+                    return $priceAndWarehouse;
+                },
+                'format' => 'raw',
             ],
             [
                 'class' => ActionColumn::class,
-                'urlCreator' => function ($action, Product $model, $key, $index, $column) {
+                'urlCreator' => static function ($action, Product $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>

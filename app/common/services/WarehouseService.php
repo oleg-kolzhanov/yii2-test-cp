@@ -19,7 +19,7 @@ class WarehouseService
     public function create(WarehouseForm $form): Warehouse
     {
         $warehouse = new Warehouse();
-        $warehouse->create($form->code, $form->name);
+        $warehouse->saveOrFail($form->code, $form->name);
 
         return $warehouse;
     }
@@ -34,7 +34,7 @@ class WarehouseService
     public function edit(int $warehouseId, WarehouseForm $form): Warehouse
     {
         $warehouse = $this->getWarehouse($warehouseId);
-        $warehouse->edit($warehouseId, $form->code, $form->name);
+        $warehouse->saveOrFail($form->code, $form->name);
 
         return $warehouse;
     }

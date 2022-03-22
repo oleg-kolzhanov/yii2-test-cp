@@ -21,6 +21,15 @@ return [
                 'application/json' => 'yii\web\JsonParser',
             ],
         ],
+        'response' => [
+            'formatters' => [
+                'xml' => [
+                    'class' => '\yii\web\XmlResponseFormatter',
+                    'useObjectTags' => true,
+                    'objectTagToLowercase' => true
+                ]
+            ],
+        ],
         'user' => [
             'identityClass' => 'api\models\User',
             'enableAutoLogin' => true,
