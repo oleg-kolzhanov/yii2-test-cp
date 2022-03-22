@@ -1,4 +1,8 @@
 <?php
+
+use common\models\User;
+use yii\log\FileTarget;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -17,7 +21,7 @@ return [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => User::class,
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -29,7 +33,7 @@ return [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => FileTarget::class,
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -44,12 +48,9 @@ return [
             ],
         ],
         'formatter' => [
-
-            'dateFormat'     => 'php:d.m.Y',
+            'dateFormat' => 'php:d.m.Y',
             'datetimeFormat' => 'php:d.m.Y в H:i:s',
-            'timeFormat'     => 'php:H:i:s',
-
-//            'dateFormat' => 'php: d.m.yy',
+            'timeFormat' => 'php:H:i:s',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
             'currencyCode' => 'RUR',

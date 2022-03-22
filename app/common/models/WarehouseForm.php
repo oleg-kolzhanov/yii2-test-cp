@@ -3,6 +3,7 @@
 namespace common\models;
 
 use yii\base\Model;
+use common\models\Warehouse;
 
 /**
  * Форма склада.
@@ -45,14 +46,11 @@ class WarehouseForm extends Model
             [['code'], 'default', 'value' => null],
             [['code'], 'integer'],
             [['name'], 'string', 'max' => 150],
-            ['code', 'unique', 'targetClass' => '\common\models\Warehouse', 'filter' => function ($query) {
+            ['code', 'unique', 'targetClass' => Warehouse::class, 'filter' => function ($query) {
                 if (!$this->warehouse->isNewRecord) {
                     $query->andWhere(['not', ['id' => $this->warehouse->id]]);
                 }
             }],
-
-
-//            ['code', 'unique', 'targetClass' => '\common\models\Warehouse'],
         ];
     }
 

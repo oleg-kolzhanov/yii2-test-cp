@@ -108,7 +108,7 @@ class ProductWarehouse extends ActiveRecord
     }
 
     /**
-     * Создание склада продукта
+     * Создание склада продукта.
      *
      * @param int $warehouseId Идентификатор склада
      * @param int $productId Идентификатор продукта
