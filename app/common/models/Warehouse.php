@@ -79,40 +79,6 @@ class Warehouse extends ActiveRecord
         return $this->hasMany(ProductWarehouse::class, ['warehouse_id' => 'id']);
     }
 
-//    /**
-//     * Создание склада.
-//     *
-//     * @param int $code Код
-//     * @param string $name Наименование
-//     * @return $this
-//     */
-//    public function create(int $code, string $name): Warehouse
-//    {
-//        $this->assertCodeNotExists($code, $this->id);
-//        $this->code = $code;
-//        $this->name = $name;
-//        $this->saveOrFail();
-//
-//        return $this;
-//    }
-
-//    /**
-//     * Редактирование склада.
-//     *
-//     * @param int $code Код
-//     * @param string $name Наименование
-//     * @return $this
-//     */
-//    public function edit(int $code, string $name): Warehouse
-//    {
-//        $this->assertCodeNotExists($code, $this->id);
-//        $this->code = $code;
-//        $this->name = $name;
-//        $this->saveOrFail();
-//
-//        return $this;
-//    }
-
     /**
      * Сохраняет склад.
      *
@@ -128,22 +94,9 @@ class Warehouse extends ActiveRecord
         if (!$this->save()) {
             throw new \DomainException('Ошибка добавления склада');
         }
-//        $this->saveOrFail();
 
         return $this;
     }
-
-//    /**
-//     * Сохраняет модель.
-//     *
-//     * @return void
-//     */
-//    public function saveOrFail()
-//    {
-//        if (!$this->save()) {
-//            throw new \DomainException('Ошибка добавления склада');
-//        }
-//    }
 
     /**
      * Проверка на существование кода.
