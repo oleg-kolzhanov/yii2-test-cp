@@ -4,6 +4,7 @@
 /** @var string $content */
 
 use common\widgets\Alert;
+use console\controllers\RbacController;
 use frontend\assets\AppAsset;
 use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
@@ -39,8 +40,15 @@ AppAsset::register($this);
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
-        $menuItems[] = ['label' => 'Склады', 'url' => ['warehouse/index']];
-        $menuItems[] = ['label' => 'Товары', 'url' => ['product/index']];
+//        Yii::$app->user->can(AdminRbac::PERMISSION_ADMIN_PANEL) ?
+//            ['label' => Yii::t('app', 'NAV_ADMIN'), 'url' => ['/admin/default/index']] :
+//            false,
+        if (Yii::$app->user->can(RbacController::PERMISSION_WAREHOUSE_SECTION)) {
+            $menuItems[] = ['label' => 'Склады', 'url' => ['warehouse/index']];
+        }
+        if (Yii::$app->user->can(RbacController::PERMISSION_PRODUCT_SECTION)) {
+            $menuItems[] = ['label' => 'Товары', 'url' => ['product/index']];
+        }
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
             . Html::submitButton(

@@ -2,14 +2,16 @@
 
 namespace frontend\controllers;
 
-use common\controllers\BaseController;
 use common\models\Warehouse;
 use common\models\search\WarehouseSearch;
 use common\models\WarehouseForm;
 use common\services\WarehouseService;
+use console\controllers\RbacController;
 use Yii;
 use yii\base\Module;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -17,7 +19,7 @@ use yii\web\Response;
 /**
  * Контролер склада.
  */
-class WarehouseController extends BaseController
+class WarehouseController extends Controller
 {
     /**
      * @var Warehouse Модель склада
@@ -71,6 +73,15 @@ class WarehouseController extends BaseController
                     'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => [RbacController::PERMISSION_WAREHOUSE_SECTION],
+                        ],
                     ],
                 ],
             ]
