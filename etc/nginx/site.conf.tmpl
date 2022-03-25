@@ -100,63 +100,6 @@ server {
         deny all;
     }
 }
-
-server {
-    listen ${NGINX_PORT};
-    server_name  backend.${NGINX_HOST};
-    root ${NGINX_ROOT}/backend/web;
-    index index.php
-
-    charset utf-8;
-    client_max_body_size 1024m;
-    underscores_in_headers on;
-
-    location ~ ^/uploads/profile/users/documents/(\d+)/(.+)(jpg|jpeg|gif|png)$ {
-        return 404;
-    }
-
-    location / {
-        # Перенаправляем все запросы к несуществующим директориям и файлам на index.php
-        try_files $uri $uri/ /index.php?$args;
-    }
-
-    location ~* ^.+\.(jpg|jpeg|gif|png|ico|cur|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|mid|midi|wav|bmp|rtf|js|swf|flv|avi|djvu|mp3|mp4|eot|svg|ttf|woff|mp3|ogg|html)$ {
-        expires max;
-        etag on;
-        add_header Pragma "public";
-        add_header Cache-Control "public, must-revalidate, proxy-revalidate";
-    }
-
-    # Предотвращаем обработку Yii обращений к несуществующим статическим файлам
-    # location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
-    #     try_files $uri =404;
-    # }
-
-    location ~ \.php$ {
-        fastcgi_split_path_info  ^(.+\.php)(.*)$;
-
-        # позволяем yii перехватывать запросы к несуществующим PHP-файлам
-        set $fsn /index.php;
-        if (-f $document_root$fastcgi_script_name){
-            set $fsn $fastcgi_script_name;
-        }
-
-        fastcgi_pass ${PHP_HOST}:${PHP_PORT};
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fsn;
-
-        # PATH_INFO и PATH_TRANSLATED могут быть опущены, но стандарт RFC 3875 определяет для CGI
-        fastcgi_param  PATH_INFO        $fastcgi_path_info;
-        fastcgi_param  PATH_TRANSLATED  $document_root$fsn;
-
-        fastcgi_buffers 8 16k;
-        fastcgi_buffer_size 32k;
-    }
-
-    location ~ /\.(ht|svn|git) {
-        deny all;
-    }
-}
 server {
     listen ${NGINX_PORT};
     server_name  api.${NGINX_HOST};

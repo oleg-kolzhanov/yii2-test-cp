@@ -18,7 +18,6 @@ class m220317_124419_create_product_warehouse_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%product_warehouse}}', [
-            'id' => $this->primaryKey()->comment('Идентификатор связи склада с продуктом'),
             'warehouse_id' => $this->integer()->notNull()->comment('Идентификатор склада'),
             'product_id' => $this->integer()->notNull()->comment('Идентификатор продукта'),
             'cost' => $this->float()->null()->comment('Стоимость товара'),
@@ -26,6 +25,13 @@ class m220317_124419_create_product_warehouse_table extends Migration
             'created_at' => $this->integer()->notNull()->comment('Временная метка создания записи'),
             'updated_at' => $this->integer()->notNull()->comment('Временная метка обновления записи'),
         ]);
+
+        // Создаёт составной первичный ключ.
+        $this->addPrimaryKey(
+            '{{%product_warehouse_pkey}}',
+            '{{%product_warehouse}}',
+            ['warehouse_id', 'product_id']
+        );
 
         // Создаёт индекс для поля `warehouse_id`
         $this->createIndex(
@@ -88,6 +94,12 @@ class m220317_124419_create_product_warehouse_table extends Migration
         // Удаляет индекс для поля `product_id`
         $this->dropIndex(
             '{{%idx-product_warehouse-product_id}}',
+            '{{%product_warehouse}}'
+        );
+
+        // Удаляет составной первичный ключ.
+        $this->dropPrimaryKey(
+            '{{%product_warehouse_pkey}}',
             '{{%product_warehouse}}'
         );
 

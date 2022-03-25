@@ -21,7 +21,7 @@ services:
     working_dir: /docker/etc/nginx
     restart: always
     environment:
-      - VIRTUAL_HOST=${APP_HOST},backend.${APP_HOST},api.${APP_HOST}
+      - VIRTUAL_HOST=${APP_HOST},api.${APP_HOST}
       - VIRTUAL_PORT=${APP_PORT}
       - VIRTUAL_NETWORK=proxy
       - HTTPS_METHOD=nohttps

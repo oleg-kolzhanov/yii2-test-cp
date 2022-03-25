@@ -9,7 +9,6 @@ use yii\db\ActiveRecord;
 /**
  * Модель связи склада с продуктом.
  *
- * @property int $id Идентификатор связи склада с продуктом
  * @property int $warehouse_id Идентификатор склада
  * @property int $product_id Идентификатор продукта
  * @property float|null $cost Стоимость товара
@@ -28,6 +27,14 @@ class ProductWarehouse extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%product_warehouse}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function primaryKey()
+    {
+        return ['warehouse_id', 'product_id'];
     }
 
     /**

@@ -2,13 +2,9 @@
 
 namespace common\models;
 
-use insolita\ArrayStructureValidator\ArrayStructureValidator;
+use common\validators\PriceValidator;
 use yii\base\Model;
 use yii\db\ActiveRecord;
-use yii\helpers\Json;
-use yii\helpers\StringHelper;
-use yii\validators\NumberValidator;
-use yii\validators\ValidationAsset;
 
 /**
  * Форма продукта.
@@ -77,8 +73,7 @@ class ProductForm extends Model
             [['manufactured_at'], 'string'],
             [['name'], 'string', 'max' => 150],
             [['description'], 'string', 'max' => 1500],
-            ['prices', 'common\validators\PriceValidator'],
-            ['prices', 'validatePrices'],
+            ['prices', PriceValidator::class],
         ];
     }
 
@@ -94,28 +89,5 @@ class ProductForm extends Model
             'description' => 'Описание товара',
             'manufactured_at' => 'Дата изготовления',
         ];
-    }
-
-    /**
-     * Валидации цены и количества.
-     *
-     * @return void
-     */
-    public function validatePrices()
-    {
-        $validator = new NumberValidator();
-        $numberPattern = $validator->numberPattern;
-        $integerPattern = $validator->integerPattern;
-        foreach ($this->prices as $price) {
-            if (!empty($price['cost'])) {
-                if (!preg_match($numberPattern, StringHelper::normalizeNumber($price['cost']))) {
-                    $this->addError('prices', '«Стоимость» должно быть числом.');
-                }
-            }
-            if (!empty($price['quantity'])
-                && !preg_match($integerPattern, StringHelper::normalizeNumber($price['quantity']))) {
-                $this->addError('prices', '«Кол-во» должно быть целым числом.');
-            }
-        }
     }
 }

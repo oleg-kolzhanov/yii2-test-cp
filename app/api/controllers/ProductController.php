@@ -3,13 +3,14 @@
 namespace api\controllers;
 
 use api\models\Product;
-use yii\rest\ActiveController;
 use api\components\Serializer;
+use yii\data\ActiveDataProvider;
+use yii\rest\Controller;
 
 /**
  * Контроллер продуктов.
  */
-class ProductController extends ActiveController
+class ProductController extends Controller
 {
     /**
      * @var string $modelClass Модель продуктов
@@ -25,4 +26,16 @@ class ProductController extends ActiveController
         'class' => Serializer::class,
         'collectionEnvelope' => 'data',
     ];
+
+    /**
+     * Список продуктов.
+     *
+     * @return ActiveDataProvider
+     */
+    public function actionIndex(): ActiveDataProvider
+    {
+        return new ActiveDataProvider([
+            'query' => Product::find()->with('prices.warehouse'),
+        ]);
+    }
 }
