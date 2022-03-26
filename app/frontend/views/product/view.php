@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         if (!is_null($price->cost)) {
                             $priceAndWarehouse .=
                                 $price->warehouse->name . ' — '
-                                . PriceHelper::format($price->cost) . '<br>';
+                                . Yii::$app->formatter->asCurrency($price->cost) . '<br>';
                         }
                     }
                     return $priceAndWarehouse;

@@ -5,7 +5,6 @@ namespace console\controllers;
 use Yii;
 use yii\helpers\Console;
 use yii\console\Controller;
-use common\components\rbac\UserGroupRule;
 
 /**
  * Контроллер rbac доступов.
@@ -13,17 +12,14 @@ use common\components\rbac\UserGroupRule;
 class RbacController extends Controller
 {
     /**
-     * Получить роли.
-     *
-     * @return array
+     * Имя разрешения для раздела продуктов.
      */
-    public static function roles()
-    {
-        return [
-            'guest' => 'Гость',
-            'administrator' => 'Администратор',
-        ];
-    }
+    const PERMISSION_PRODUCT_SECTION = 'productSection';
+
+    /**
+     * Имя разрешения для раздела складов.
+     */
+    const PERMISSION_WAREHOUSE_SECTION = 'warehouseSection';
 
     /**
      * Инициализация доступов.
@@ -33,51 +29,23 @@ class RbacController extends Controller
      */
     public function actionInit()
     {
-        $authManager = Yii::$app->authManager;
-        $authManager->removeAll(); // Удаляем старые данные, чтобы не было конфликта (обязательно!).
-        $userGroupRule = new UserGroupRule();
-        $authManager->add($userGroupRule);
-        foreach (static::roles() as $role => $description) {
-            $$role = $authManager->createRole($role);
-            $$role->ruleName = $userGroupRule->name;
-            $authManager->add($$role);
-            $$role->description = $description;
-        }
+        $auth = Yii::$app->getAuthManager();
+        $auth->removeAll();
 
-        // Разрешения доступов по ролям (группам).
-        $permission = [
-            'guest' => [
-                'route/app-frontend/site/error',
-                'route/app-frontend/site/login',
-            ],
-            'administrator' => [
-                'route/app-frontend/site/logout',
-                'route/app-frontend/site/index',
+        $productSection = $auth->createPermission('productSection');
+        $productSection->description = 'Product section';
+        $auth->add($productSection);
 
-                'route/app-frontend/warehouse/index',
-                'route/app-frontend/warehouse/create',
-                'route/app-frontend/warehouse/view',
-                'route/app-frontend/warehouse/update',
-                'route/app-frontend/warehouse/delete',
+        $warehouseSection = $auth->createPermission('warehouseSection');
+        $warehouseSection->description = 'Warehouse section';
+        $auth->add($warehouseSection);
 
-                'route/app-frontend/product/index',
-                'route/app-frontend/product/create',
-                'route/app-frontend/product/view',
-                'route/app-frontend/product/update',
-                'route/app-frontend/product/delete',
-            ],
-        ];
-        foreach ($permission as $role => $routes) {
-            foreach ($routes as $route) {
-                if (is_null($authManager->getPermission($route))) {
-                    $permission = $authManager->createPermission($route);
-                    $authManager->add($permission);
-                }
-                $authManager->addChild($authManager->getRole($role), $authManager->getPermission($route));
-            }
-        }
+        $admin = $auth->createRole('admin');
+        $admin->description = 'Admin';
+        $auth->add($admin);
 
-        $authManager->addChild($administrator, $guest);
+        $auth->addChild($admin, $warehouseSection);
+        $auth->addChild($admin, $productSection);
 
         $this->stdout("RBAC has been updated.\n", Console::FG_GREEN);
 

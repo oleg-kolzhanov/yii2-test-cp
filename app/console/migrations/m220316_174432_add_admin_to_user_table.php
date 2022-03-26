@@ -31,7 +31,6 @@ class m220316_174432_add_admin_to_user_table extends Migration
             'password_reset_token' => null,
             'email' => 'test@admin.ru',
             'status' => 10,
-            'group' => User::GROUP_ADMINISTRATOR,
             'created_at' => $time,
             'updated_at' => $time,
             'verification_token' => Yii::$app->security->generateRandomString(),

@@ -2,19 +2,19 @@
 
 namespace frontend\controllers;
 
-use common\controllers\BaseController;
 use common\services\AuthService;
 use Yii;
 use yii\base\Module;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use yii\web\Controller;
 use yii\web\Response;
 
 /**
  * Контроллер сайта.
  */
-class SiteController extends BaseController
+class SiteController extends Controller
 {
     /**
      * @var AuthService Сервис аутентификации

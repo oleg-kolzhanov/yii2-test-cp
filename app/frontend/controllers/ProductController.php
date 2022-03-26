@@ -2,16 +2,18 @@
 
 namespace frontend\controllers;
 
-use common\controllers\BaseController;
 use common\models\Product;
 use common\models\ProductForm;
 use common\models\search\ProductSearch;
 use common\services\ProductService;
+use console\controllers\RbacController;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -19,7 +21,7 @@ use yii\web\Response;
 /**
  * Контроллер продукта.
  */
-class ProductController extends BaseController
+class ProductController extends Controller
 {
     /**
      * @var Product Модель продукта
@@ -73,6 +75,15 @@ class ProductController extends BaseController
                     'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => [RbacController::PERMISSION_PRODUCT_SECTION],
+                        ],
                     ],
                 ],
             ]

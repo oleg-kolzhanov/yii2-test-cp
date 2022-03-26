@@ -3,7 +3,6 @@
 namespace common\models;
 
 use yii\base\Model;
-use common\models\Warehouse;
 
 /**
  * Форма склада.
@@ -20,6 +19,9 @@ class WarehouseForm extends Model
      */
     public $name;
 
+    /**
+     * @var Warehouse|null Склад
+     */
     protected $warehouse;
 
     /**

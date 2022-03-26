@@ -52,7 +52,7 @@ return [
             'datetimeFormat' => 'php:d.m.Y в H:i:s',
             'timeFormat' => 'php:H:i:s',
             'decimalSeparator' => ',',
-            'thousandSeparator' => ' ',
+            'thousandSeparator' => '&#x202F;',
             'currencyCode' => 'RUR',
         ],
     ],

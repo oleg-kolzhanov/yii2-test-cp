@@ -52,5 +52,4 @@ class Product extends \common\models\Product
         }
         return $data;
     }
-
 }

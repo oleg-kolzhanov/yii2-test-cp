@@ -2,6 +2,9 @@
 
 namespace common\validators;
 
+use common\models\ProductForm;
+use yii\helpers\StringHelper;
+use yii\validators\NumberValidator;
 use yii\validators\Validator;
 
 /**
@@ -24,7 +27,21 @@ class PriceValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        $value = $model->$attribute;
+        $validator = new NumberValidator();
+        $numberPattern = $validator->numberPattern;
+        $integerPattern = $validator->integerPattern;
+        /** @var ProductForm $model */
+        foreach ($model->prices as $price) {
+            if (!empty($price['cost'])) {
+                if (!preg_match($numberPattern, StringHelper::normalizeNumber($price['cost']))) {
+                    $this->addError($model, $attribute, '«Стоимость» должно быть числом.');
+                }
+            }
+            if (!empty($price['quantity'])
+                && !preg_match($integerPattern, StringHelper::normalizeNumber($price['quantity']))) {
+                $this->addError($model, $attribute, '«Кол-во» должно быть целым числом.');
+            }
+        }
     }
 
     /**
